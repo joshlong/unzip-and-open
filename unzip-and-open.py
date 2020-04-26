@@ -18,7 +18,7 @@ if __name__ == '__main__':
     try:
         run('unzip -a %s' % zip)
     except:
-        print "non zero exist code but we proceed anyway.."
+        print "non-zero exit code but we proceed anyway.."
 
     gradle_build = os.path.join(folder_name, 'build.gradle')
     mvn_pom = os.path.join(folder_name, 'pom.xml')
