@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import subprocess
@@ -7,26 +7,26 @@ import sys
 if __name__ == '__main__':
 
     def run(c):
-        print 'running: %s' % c
+        print('running: %s' % c)
         return subprocess.check_call(c, shell=True)
-
 
     assert len(sys.argv) > 1 and sys.argv[1].endswith('.zip'), 'you must specify a .zip file to open.'
     zip = os.path.abspath(sys.argv[1])
-    assert os.path.exists(zip), 'the zip file referenced must be valid.'
+    assert os.path.exists(zip), 'zip file not found.'
     folder_name = zip.split('.')[0]
     try:
         run('unzip -a %s' % zip)
     except:
-        print "non zero exist code but we proceed anyway.."
+        print("non-zero exit code but we proceed anyway..")
 
-    gradle_build = os.path.join(folder_name, 'build.gradle')
+    gradle_build_groovy = os.path.join(folder_name, 'build.gradle')
+    gradle_build_kotlin = os.path.join (folder_name , 'build.gradle.kts')
     mvn_pom = os.path.join(folder_name, 'pom.xml')
-    mvn_exists = os.path.exists(mvn_pom)
-    gradle_exists = os.path.exists(gradle_build)
-    assert gradle_exists or mvn_exists, 'there must be a `build.gradle` or a `pom.xml` in the root of the folder %s.' % folder_name
+    success = False 
+    build_files = [ gradle_build_groovy , gradle_build_kotlin , mvn_pom]
 
-    if gradle_exists:
-        run('idea  %s/build.gradle' % folder_name)
-    else:
-        run('xdg-open %s/pom.xml' % folder_name)
+    for fn in  build_files: 
+        if os.path.exists (fn )  : 
+            run ('idea %s' % fn )
+            success = True 
+    assert success , 'valid build file (one of: %s) not found'  %  ','.join(build_files)
